@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeffrey's Bookshelf</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .logo-font { font-family: 'Playfair Display', serif; }
+        .book-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .book-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.5); }
+        .cover { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.6); }
+        .header-bg { background: linear-gradient(135deg, #1a1a1a 0%, #330000 100%); }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+    <header class="header-bg border-b border-red-900">
+        <div class="max-w-7xl mx-auto px-6 py-6 md:py-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-red-700 rounded flex items-center justify-center text-white text-2xl font-bold">JE</div>
+                <div>
+                    <h1 class="logo-font text-4xl tracking-tight">Jeffrey's Bookshelf</h1>
+                    <p class="text-red-400 text-sm tracking-widest">DOCUMENTED AMAZON PURCHASES FROM RELEASED EMAIL CORRESPONDENCE • 2007–2019</p>
+                </div>
+            </div>
+            
+            <!-- Search bar only (no button) -->
+            <div class="w-full md:w-96">
+                <input id="search" type="text" placeholder="Search titles or authors..." 
+                       class="bg-zinc-900 border border-zinc-700 rounded-full px-6 py-3 w-full focus:outline-none focus:border-red-600 text-base">
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 md:py-12">
+        <div id="books-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8"></div>
+    </main>
+
+    <footer class="bg-black border-t border-zinc-900 py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center text-xs text-zinc-500">
+            Reconstructed from Amazon order confirmations contained in a large archive of released emails.<br>
+            This collection includes every specifically named title identified to date.<br>
+            Additional books will be added as further analysis of the correspondence continues.
+        </div>
+    </footer>
+
+    <script>
+        const books = [
+            {title: "Secrets of Western Tantra", author: "Christopher S. Hyatt", year: "2007", cover: "https://covers.openlibrary.org/b/isbn/9781561841080-L.jpg", desc: "Tantra + Western ceremonial magic + Reichian bodywork"},
+            {title: "Modern Sex Magick", author: "Donald Michael Kraig", year: "2007", cover: "https://covers.openlibrary.org/b/isbn/9781567183948-L.jpg", desc: "History and rituals of Western sex magic, Crowley O.T.O."},
+            {title: "Ecstasy Through Tantra", author: "John Mumford", year: "2007", cover: "https://covers.openlibrary.org/b/isbn/9780875424941-L.jpg", desc: "Sacred sexuality for full-body mystical rapture"},
+            {title: "A Chakra & Kundalini Workbook", author: "John Mumford", year: "2007", cover: "https://covers.openlibrary.org/b/isbn/9781567184730-L.jpg", desc: "Exercises to awaken and raise the serpent power"},
+            {title: "The Annotated Lolita", author: "Vladimir Nabokov", year: "2019", cover: "https://covers.openlibrary.org/b/isbn/9780679727293-L.jpg", desc: "Purchased May 24, 2019 — weeks before final arrest"},
+            {title: "Lolita", author: "Vladimir Nabokov", year: "multiple", cover: "https://covers.openlibrary.org/b/isbn/9780679723165-L.jpg", desc: "Multiple copies over the years; kept by bed and on plane"},
+            {title: "The Birth of Tragedy", author: "Friedrich Nietzsche", year: "2019", cover: "https://covers.openlibrary.org/b/isbn/9780140433395-L.jpg", desc: "Final Kindle purchase alongside Annotated Lolita"},
+            {title: "Filthy Rich", author: "James Patterson et al.", year: "2016", cover: "https://covers.openlibrary.org/b/isbn/9780316274050-L.jpg", desc: "Bought 17+ copies the week it was released — the book about himself"},
+            {title: "The Physics of Immortality", author: "Frank J. Tipler", year: "2014", cover: "https://covers.openlibrary.org/b/isbn/9780385467995-L.jpg", desc: "Physics proves the dead will be resurrected by future computers"},
+            {title: "Rise and Kill First", author: "Ronen Bergman", year: "2018", cover: "https://covers.openlibrary.org/b/isbn/9780812982118-L.jpg", desc: "Secret history of Israel’s targeted assassinations"},
+            {title: "The Rosie Project", author: "Graeme Simsion", year: "2014", cover: "https://covers.openlibrary.org/b/isbn/9781476729091-L.jpg", desc: "Genetics professor writes scientific questionnaire to find perfect wife"},
+            {title: "Merchants in the Temple", author: "Gianluigi Nuzzi", year: "2015", cover: "https://covers.openlibrary.org/b/isbn/9781250093776-L.jpg", desc: "Leaked Vatican documents on Pope Francis’s war on corruption"},
+            {title: "In the Closet of the Vatican", author: "Frédéric Martel", year: "2019", cover: "https://covers.openlibrary.org/b/isbn/9781472956163-L.jpg", desc: "Hidden network of gay clergy and hypocrisy in the Vatican"},
+            {title: "Mycelium Running", author: "Paul Stamets", year: "2019", cover: "https://covers.openlibrary.org/b/isbn/9781580085793-L.jpg", desc: "How mushrooms can save the world"},
+            {title: "Fire and Fury", author: "Michael Wolff", year: "2018", cover: "https://covers.openlibrary.org/b/isbn/9781250158062-L.jpg", desc: "Explosive Trump White House exposé"},
+            {title: "Fear", author: "Bob Woodward", year: "2018", cover: "https://covers.openlibrary.org/b/isbn/9781501175510-L.jpg", desc: "Trump in the White House"},
+            {title: "Gut Feelings", author: "Gerd Gigerenzer", year: "2016", cover: "https://covers.openlibrary.org/b/isbn/9780143113768-L.jpg", desc: "The intelligence of the unconscious"},
+            {title: "Borderline Conditions and Pathological Narcissism", author: "Otto F. Kernberg", year: "2017", cover: "https://covers.openlibrary.org/b/isbn/9780876687536-L.jpg", desc: "One of the six narcissism books"},
+            {title: "The Jesus Dynasty", author: "James Tabor", year: "2007", cover: "https://covers.openlibrary.org/b/isbn/9780743287234-L.jpg", desc: "Early 2007 purchase"}
+        ];
+
+        function renderBooks(filtered) {
+            const grid = document.getElementById('books-grid');
+            grid.innerHTML = '';
+            filtered.forEach(book => {
+                const amazonUrl = `https://www.amazon.com/s?k=${encodeURIComponent(book.title + " " + book.author)}`;
+                const card = document.createElement('a');
+                card.href = amazonUrl;
+                card.target = "_blank";
+                card.className = 'book-card bg-zinc-900 rounded-2xl overflow-hidden group block';
+                card.innerHTML = `
+                    <div class="relative">
+                        <img src="${book.cover}" loading="lazy" 
+                             class="cover w-full aspect-[5/7] object-cover" 
+                             alt="${book.title}"
+                             onerror="this.src='https://via.placeholder.com/300x420/1a1a1a/ffffff?text=No+Cover'">
+                        <div class="absolute top-3 right-3 bg-black/80 text-[10px] font-mono px-2 py-1 rounded">${book.year}</div>
+                    </div>
+                    <div class="p-5 md:p-6">
+                        <h3 class="font-semibold text-base md:text-lg leading-tight mb-1 line-clamp-2">${book.title}</h3>
+                        <p class="text-red-400 text-sm mb-3">${book.author}</p>
+                        <p class="text-zinc-400 text-xs md:text-sm line-clamp-3">${book.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterBooks() {
+            const term = document.getElementById('search').value.toLowerCase().trim();
+            const filtered = books.filter(b => 
+                b.title.toLowerCase().includes(term) || b.author.toLowerCase().includes(term)
+            );
+            renderBooks(filtered);
+        }
+
+        // Live search as you type
+        window.onload = () => {
+            renderBooks(books);
+            document.getElementById('search').addEventListener('input', filterBooks);
+        };
+    </script>
+</body>
+</html>
